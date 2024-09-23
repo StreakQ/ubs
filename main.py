@@ -13,12 +13,12 @@ form = Form()
 form.setupUi(window)
 
 # Get the widgets
-C_table = window.findChild(QTableWidget, 'tableWidget_C')
-T_table = window.findChild(QTableWidget, 'tableWidget_T')
-standard_input_button = window.findChild(QPushButton, 'standartinput')
+C_table = window.findChild(QTableWidget, 'Matrix_C')
+T_table = window.findChild(QTableWidget, 'Matrix_T')
+standard_input_button = window.findChild(QPushButton, 'std_input')
 simplify1_button = window.findChild(QPushButton, 'simplify1')
 simplify2_button = window.findChild(QPushButton, 'simplify2')
-solve_button = window.findChild(QPushButton, 'solve')
+solve_button = window.findChild(QPushButton, 'build_tree')
 spinBox = window.findChild(QSpinBox, 'spinBox')
 
 # Define the functions
@@ -65,50 +65,41 @@ def find_TZmin(T):
         temp.append(sum(row))
     return min(temp)
 
-def find_Tmin(data_T, lst_of_indexes):
-    """Нахождение значения в каждой строке матрицы T по индексу минимального значения в каждой строке
-    в матрице С"""
-    Tmin = []
-    i = 0
-    for row in data_T:
-        Tmin.append(row[lst_of_indexes[i]])
-        i += 1
-    return Tmin
-
 def simplify_matrix_1(C, T, Cmin, Tmin):
     """Превращение матриц C и T в C0 и T0"""
     z = 0
     for i in range(len(C)):
         for j in range(len(C[0])):
             if C[i][j] >= Cmin[z] and T[i][j] > Tmin[z]:
-                C[i][j], T[i][j] = '-'
+                C[i][j], T[i][j] = '-', '-'
         z += 1
     return C, T
 
 def simplify_matrix_2(C0, T0, TZ):
     """Превращение матриц C0 и T0 в C1 и T1"""
-    Tmin = find_min(T0)
-    for i in range(5):
-        for j in range(4):
+    Tmin = [min(row) for row in T0]  # find minimum value in each row of T0
+    for i in range(len(T0)):
+        for j in range(len(T0[0])):
             if not isinstance(T0[i][j], str):
                 value = T0[i][j] + sum(Tmin) - Tmin[i]
-            if 'value' in locals() and value <= TZ:
-                T0[i][j], C0[i][j] = "-"
+                if value <= TZ:
+                    T0[i][j], C0[i][j] = "-", "-"
     return C0, T0
 
 def construct_tree_solution(C1, T1):
     """Получение пары С и Т для построения древа решений"""
-    Copt = find_min(C1)
-    Topt = find_min(T1)
+    Copt = [min(row) for row in C1]  # find minimum value in each row of C1
+    Topt = [min(row) for row in T1]  # find minimum value in each row of T1
     tree = []
-    tree_matrix = []
     for i in range(len(C1)):
+        tree_row = []
         for j in range(len(C1[0])):
-            if not type == 'bool':
+            if not isinstance(C1[i][j], bool):  # check if element is not boolean
                 temp_C = C1[i][j] + sum(Copt) - Copt[i]
                 temp_T = T1[i][j] + sum(Topt) - Topt[i]
-                tree_matrix.append(tuple(temp_C,temp_T))
-        tree.append(tree_matrix)
+                tree_row.append((temp_C, temp_T))  # append tuple to tree_row
+        tree.append(tree_row)  # append tree_row to tree
+    return tree
 
 def print_tree_solution():
     """Графическое отображение деревьев решений"""
@@ -157,8 +148,8 @@ def simplify1_clicked():
                 row.append("")
         T.append(row)
 
-    Cmin = find_min(C)
-    Tmin = find_min(T)
+    Cmin = [min(row) for row in C]
+    Tmin = [min(row) for row in T]
 
     C0, T0 = simplify_matrix_1(C, T, Cmin, Tmin)
 
@@ -215,7 +206,7 @@ def simplify2_clicked():
             else:
                 T_table.setItem(i, j, QTableWidgetItem(str(T1[i][j])))
 
-def solve_clicked():
+def build_tree_clicked():
     C = []
     for i in range(5):
         row = []
@@ -246,7 +237,7 @@ def solve_clicked():
 
     print_tree_solution()
 
-def standart_input_clicked():
+def std_input_clicked():
     C, T, TZ = standart_input()
 
     for i in range(5):
@@ -256,14 +247,11 @@ def standart_input_clicked():
 
     spinBox.setValue(TZ)
 
-# Connect the buttons to their respective functions
-standard_input_button.clicked.connect(standart_input_clicked)
+
+standard_input_button.clicked.connect(std_input_clicked)
 simplify1_button.clicked.connect(simplify1_clicked)
 simplify2_button.clicked.connect(simplify2_clicked)
-solve_button.clicked.connect(solve_clicked)
+solve_button.clicked.connect(build_tree_clicked)
 
-# Show the window
 window.show()
-
-# Run the application
 app.exec()
