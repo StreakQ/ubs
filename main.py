@@ -21,7 +21,7 @@ simplify2_button = window.findChild(QPushButton, 'simplify2')
 solve_button = window.findChild(QPushButton, 'build_tree')
 spinBox = window.findChild(QSpinBox, 'spinBox')
 
-# Define the functions
+
 def check_data_matrix(data):
     """Проверка корректности ввода данных в матрицу"""
     for row in data:
@@ -39,17 +39,10 @@ def check_TZ(num):
         raise ValueError("Значение TZ меньше или равно 0")
 
 def check_TZ_and_TZmin(TZ, T):
-    """ППоверка на TZ >= TZmin"""
+    """Проверка на TZ >= TZmin"""
     TZmin = find_TZmin(T)
     if TZmin < TZ:
         raise ValueError("Введенное значение TZ меньше TZmin")
-
-def find_min(data):
-    """Нахождение минимального значения в каждой строке матрицы """
-    min_values = []
-    for row in data:
-        min_values.append(min(row))
-    return min_values
 
 def find_Cmin_indexes(data):
     """Нахождение индексов минимальных значений матрицы С"""
@@ -65,40 +58,54 @@ def find_TZmin(T):
         temp.append(sum(row))
     return min(temp)
 
-def simplify_matrix_1(C, T, Cmin, Tmin):
+def simplify_matrix_1(C, T):
     """Превращение матриц C и T в C0 и T0"""
-    z = 0
+    Cmin = [min(row) for row in C]
+    Tmin = []
+    indexes = find_Cmin_indexes(C)
+    i = 0
+    for row in T:
+        Tmin.append(row[indexes[i]])
+        i += 1
     for i in range(len(C)):
         for j in range(len(C[0])):
-            if C[i][j] >= Cmin[z] and T[i][j] > Tmin[z]:
+            if C[i][j] >= Cmin[i] and T[i][j] > Tmin[i]:
                 C[i][j], T[i][j] = '-', '-'
-        z += 1
     return C, T
 
 def simplify_matrix_2(C0, T0, TZ):
     """Превращение матриц C0 и T0 в C1 и T1"""
-    Tmin = [min(row) for row in T0]  # find minimum value in each row of T0
+    Tmin = [min(float(x) for x in row if x != '-') for row in T0]
+
+
+    for i in range(len(C0)):
+        for j in range(len(C0[0])):
+            if C0[i][j] != '-':
+                C0[i][j] = float(C0[i][j])
+            if T0[i][j] != '-':
+                T0[i][j] = float(T0[i][j])
+
     for i in range(len(T0)):
         for j in range(len(T0[0])):
             if not isinstance(T0[i][j], str):
                 value = T0[i][j] + sum(Tmin) - Tmin[i]
-                if value <= TZ:
+                if value >= TZ:
                     T0[i][j], C0[i][j] = "-", "-"
     return C0, T0
 
 def construct_tree_solution(C1, T1):
     """Получение пары С и Т для построения древа решений"""
-    Copt = [min(row) for row in C1]  # find minimum value in each row of C1
-    Topt = [min(row) for row in T1]  # find minimum value in each row of T1
+    Copt = [min(row) for row in C1]
+    Topt = [min(row) for row in T1]
     tree = []
     for i in range(len(C1)):
         tree_row = []
         for j in range(len(C1[0])):
-            if not isinstance(C1[i][j], bool):  # check if element is not boolean
+            if not isinstance(C1[i][j], bool):
                 temp_C = C1[i][j] + sum(Copt) - Copt[i]
                 temp_T = T1[i][j] + sum(Topt) - Topt[i]
-                tree_row.append((temp_C, temp_T))  # append tuple to tree_row
-        tree.append(tree_row)  # append tree_row to tree
+                tree_row.append((temp_C, temp_T))
+        tree.append(tree_row)
     return tree
 
 def print_tree_solution():
@@ -148,12 +155,9 @@ def simplify1_clicked():
                 row.append("")
         T.append(row)
 
-    Cmin = [min(row) for row in C]
-    Tmin = [min(row) for row in T]
 
-    C0, T0 = simplify_matrix_1(C, T, Cmin, Tmin)
+    C0, T0 = simplify_matrix_1(C, T)
 
-    # Display the simplified matrices in the GUI
     for i in range(5):
         for j in range(4):
             if C0[i][j] == "-":
@@ -173,7 +177,7 @@ def simplify2_clicked():
         for j in range(4):
             item = C_table.item(i, j)
             if item is not None and item.text() != "":
-                row.append(float(item.text()))
+                row.append(item.text())
             else:
                 row.append(0)
         C.append(row)
@@ -184,7 +188,7 @@ def simplify2_clicked():
         for j in range(4):
             item = T_table.item(i, j)
             if item is not None and item.text() != "":
-                row.append(float(item.text()))
+                row.append(item.text())
             else:
                 row.append(0)
         T.append(row)
@@ -193,7 +197,6 @@ def simplify2_clicked():
 
     C1, T1 = simplify_matrix_2(C, T, TZ)
 
-    # Display the simplified matrices in the GUI
     for i in range(5):
         for j in range(4):
             if C1[i][j] == "-":
