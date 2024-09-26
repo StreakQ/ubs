@@ -149,21 +149,6 @@
      <string>T =</string>
     </property>
    </widget>
-   <widget class="QTreeWidget" name="treeWidget">
-    <property name="geometry">
-     <rect>
-      <x>290</x>
-      <y>30</y>
-      <width>471</width>
-      <height>271</height>
-     </rect>
-    </property>
-    <column>
-     <property name="text">
-      <string notr="true">1</string>
-     </property>
-    </column>
-   </widget>
    <widget class="QPushButton" name="std_input">
     <property name="geometry">
      <rect>
@@ -180,8 +165,8 @@
    <widget class="QPushButton" name="simplify1">
     <property name="geometry">
      <rect>
-      <x>440</x>
-      <y>310</y>
+      <x>430</x>
+      <y>440</y>
       <width>151</width>
       <height>23</height>
      </rect>
@@ -193,8 +178,8 @@
    <widget class="QPushButton" name="simplify2">
     <property name="geometry">
      <rect>
-      <x>440</x>
-      <y>340</y>
+      <x>430</x>
+      <y>470</y>
       <width>151</width>
       <height>23</height>
      </rect>
@@ -206,8 +191,8 @@
    <widget class="QPushButton" name="build_tree">
     <property name="geometry">
      <rect>
-      <x>440</x>
-      <y>370</y>
+      <x>430</x>
+      <y>500</y>
       <width>151</width>
       <height>23</height>
      </rect>
@@ -358,6 +343,19 @@
      </property>
     </column>
    </widget>
+   <widget class="QLabel" name="image_label">
+    <property name="geometry">
+     <rect>
+      <x>270</x>
+      <y>40</y>
+      <width>421</width>
+      <height>341</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
@@ -365,7 +363,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>21</height>
+     <height>26</height>
     </rect>
    </property>
   </widget>

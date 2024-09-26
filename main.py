@@ -1,5 +1,9 @@
 from PyQt6 import uic
-from PyQt6.QtWidgets import QApplication, QPushButton, QTableWidget, QTableWidgetItem, QSpinBox
+from PyQt6.QtWidgets import QApplication, QPushButton, QTableWidget, QTableWidgetItem, QSpinBox, QLabel, QVBoxLayout
+from PyQt6.QtGui import QPixmap
+from PyQt6.QtCore import Qt
+from create_svg import create_svg
+import cairosvg
 
 # Load the UI file
 Form, Window = uic.loadUiType("mainForm.ui")
@@ -21,6 +25,18 @@ simplify2_button = window.findChild(QPushButton, 'simplify2')
 solve_button = window.findChild(QPushButton, 'build_tree')
 spinBox = window.findChild(QSpinBox, 'spinBox')
 
+# Convert SVG to PNG
+cairosvg.svg2png(url="example.svg", write_to="example.png")
+
+# Create a QLabel to display the PNG image
+image_label = QLabel()
+pixmap = QPixmap("example.png")
+image_label.setPixmap(pixmap)
+#image_label.setAlignment(Qt.AlignCenter)  # Optional: center the image
+
+# Add the QLabel to the window layout
+layout = window.findChild(QVBoxLayout, 'main_layout')
+layout.addWidget(image_label)
 
 def check_data_matrix(data):
     """Проверка корректности ввода данных в матрицу"""
@@ -93,26 +109,35 @@ def simplify_matrix_2(C0, T0, TZ):
                     T0[i][j], C0[i][j] = "-", "-"
     return C0, T0
 
+
 def construct_tree_solution(C1, T1):
     """Получение пары С и Т для построения древа решений"""
-    Copt = [min(row) for row in C1]
-    Topt = [min(row) for row in T1]
+    Copt = [float(min(x for x in row if x != '-')) for row in C1]
+    Topt = [float(min(x for x in row if x != '-')) for row in T1]
+
+    for i in range(len(C1)):
+        for j in range(len(C1[0])):
+            if C1[i][j] != '-':
+                C1[i][j] = float(C1[i][j])
+            if T1[i][j] != '-':
+                T1[i][j] = float(T1[i][j])
+
     tree = []
+    tree.append([[sum(Copt), sum(Topt)]])
     for i in range(len(C1)):
         tree_row = []
         for j in range(len(C1[0])):
-            if not isinstance(C1[i][j], bool):
-                temp_C = C1[i][j] + sum(Copt) - Copt[i]
-                temp_T = T1[i][j] + sum(Topt) - Topt[i]
-                tree_row.append((temp_C, temp_T))
+            if C1[i][j] != '-':
+                new_Copt = C1[i][j] + sum(Copt) - Copt[i]
+                new_Topt = T1[i][j] + sum(Topt) - Topt[i]
+                tree_row.append([new_Copt, new_Topt])
         tree.append(tree_row)
     return tree
 
-def print_tree_solution():
+def print_tree_solution(data):
     """Графическое отображение деревьев решений"""
+    create_svg(data)
 
-def print_task_solution():
-    """Графическое отображение решения задача - узел"""
 
 def standart_input():
     """Заполнение матриц С и Т значениями по умолчанию"""
@@ -216,7 +241,7 @@ def build_tree_clicked():
         for j in range(4):
             item = C_table.item(i, j)
             if item is not None and item.text() != "":
-                row.append(float(item.text()))
+                row.append(item.text())
             else:
                 row.append(0)
         C.append(row)
@@ -227,18 +252,14 @@ def build_tree_clicked():
         for j in range(4):
             item = T_table.item(i, j)
             if item is not None and item.text() != "":
-                row.append(float(item.text()))
+                row.append(item.text())
             else:
                 row.append(0)
         T.append(row)
 
-    TZ = spinBox.value()
+    data = construct_tree_solution(C, T)
 
-    C1, T1 = simplify_matrix_2(C, T, TZ)
-
-    construct_tree_solution(C1, T1)
-
-    print_tree_solution()
+    print_tree_solution(data)
 
 def std_input_clicked():
     C, T, TZ = standart_input()
