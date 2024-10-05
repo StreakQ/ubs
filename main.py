@@ -39,15 +39,15 @@ def check_data_matrix(data):
 
 def check_TZ(num):
     """Проверка правильности ввода TZ"""
-    if not isinstance(num, float):
-        raise ValueError("Значение TZ не соответствует численному ")
+    # if not isinstance(num, float):
+    #     raise ValueError("Значение TZ не соответствует численному ")
     if not num > 0:
         raise ValueError("Значение TZ меньше или равно 0")
 
 def check_TZ_and_TZmin(TZ, T):
     """Проверка на TZ >= TZmin"""
     TZmin = find_TZmin(T)
-    if TZmin < TZ:
+    if TZ < TZmin :
         raise ValueError("Введенное значение TZ меньше TZmin")
 
 def find_Cmin_indexes(data):
@@ -194,7 +194,7 @@ def input_clicked():
 
 def simplify1_clicked():
     global current_state
-    if current_state == "simplify1" or "standard_input" :
+    if current_state == "simplify1" or current_state == "standard_input":
         # Perform the action for simplify 1
         C = []
         for i in range(5):
@@ -234,6 +234,14 @@ def simplify1_clicked():
                     row.append("")
             T.append(row)
 
+        TZ = spinBox.value()
+
+        try:
+            check_TZ(float(TZ))
+            check_TZ_and_TZmin(TZ, T)
+        except ValueError as e:
+            QMessageBox.critical(None, "Ошибка", str(e))
+            return
 
         C0, T0 = simplify_matrix_1(C, T)
 
@@ -280,6 +288,8 @@ def simplify2_clicked():
             T.append(row)
 
         TZ = spinBox.value()
+
+
 
         C1, T1 = simplify_matrix_2(C, T, TZ)
 
