@@ -6,12 +6,15 @@ from create_svg import create_svg, create_node_solution, create_combine_solution
 
 Form, Window = uic.loadUiType("mainForm.ui")
 
-
+# Create the application
 app = QApplication([])
+
+# Create the window
 window = Window()
 form = Form()
 form.setupUi(window)
 
+# Get the widgets
 C_table = window.findChild(QTableWidget, 'Matrix_C')
 T_table = window.findChild(QTableWidget, 'Matrix_T')
 standard_input_button = window.findChild(QPushButton, 'std_input')
@@ -19,6 +22,9 @@ simplify1_button = window.findChild(QPushButton, 'simplify1')
 simplify2_button = window.findChild(QPushButton, 'simplify2')
 solve_button = window.findChild(QPushButton, 'build_tree')
 spinBox = window.findChild(QSpinBox, 'spinBox')
+
+
+
 
 image_label = QLabel()
 
