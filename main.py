@@ -64,6 +64,8 @@ def find_TZmin(T):
         temp.append(sum(row))
     return min(temp)
 
+
+
 def simplify_matrix_1(C, T):
     """Превращение матриц C и T в C0 и T0"""
     Cmin = [min(row) for row in C]
@@ -188,12 +190,11 @@ def input_clicked():
 
         spinBox.setValue(TZ)
         current_state = state_machine[current_state]
-        simplify1_button.setEnabled(True)
         standard_input_button.setEnabled(False)
 
 def simplify1_clicked():
     global current_state
-    if current_state == "simplify1" or "standard_input":
+    if current_state == "simplify1" :
         # Perform the action for simplify 1
         C = []
         for i in range(5):
@@ -201,7 +202,11 @@ def simplify1_clicked():
             for j in range(4):
                 item = C_table.item(i, j)
                 if item is not None and item.text() != "":
-                    row.append(float(item.text()))
+                    try:
+                        row.append(float(item.text()))
+                    except ValueError:
+                        QMessageBox.critical(None, "Ошибка", "Данные в таблице должны быть числами")
+                        return
                 else:
                     row.append("")
             C.append(row)
@@ -212,7 +217,11 @@ def simplify1_clicked():
             for j in range(4):
                 item = T_table.item(i, j)
                 if item is not None and item.text() != "":
-                    row.append(float(item.text()))
+                    try:
+                        row.append(float(item.text()))
+                    except ValueError:
+                        QMessageBox.critical(None, "Ошибка", "Данные в таблице должны быть числами")
+                        return
                 else:
                     row.append("")
             T.append(row)
