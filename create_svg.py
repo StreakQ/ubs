@@ -42,9 +42,9 @@ def create_svg(data):
 def create_node_solution(solution_dict):
     dwg = svgwrite.Drawing(filename='node_solution.svg', profile='tiny',size=(200, 200),
                            )
-    dwg.add(dwg.text('Задача', insert=(15, 25), fill='black'))
-    dwg.add(dwg.text('-', insert=(45, 25), fill='black'))
-    dwg.add(dwg.text('Узел', insert=(50, 25), fill='black'))
+    dwg.add(dwg.text('Задача', insert=(15, 35), fill='black'))
+    dwg.add(dwg.text('-', insert=(45, 35), fill='black'))
+    dwg.add(dwg.text('Узел', insert=(50, 35), fill='black'))
 
     for key, value in solution_dict.items():
         group = dwg.add(dwg.g(id=f'level-{key}',
