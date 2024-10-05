@@ -175,7 +175,7 @@ state_machine = {"standard_input": "simplify1", "simplify1": "simplify2", "simpl
 current_state = "standard_input"
 
 # Define the slot functions
-def std_input_clicked():
+def input_clicked():
     global current_state
     if current_state == "standard_input":
         # Perform the action for standard input
@@ -193,7 +193,7 @@ def std_input_clicked():
 
 def simplify1_clicked():
     global current_state
-    if current_state == "simplify1":
+    if current_state == "simplify1" or "standard_input":
         # Perform the action for simplify 1
         C = []
         for i in range(5):
@@ -314,13 +314,13 @@ def build_tree_clicked():
         solve_button.setEnabled(False)
 
 # Connect the buttons to the slot functions
-standard_input_button.clicked.connect(std_input_clicked)
+standard_input_button.clicked.connect(input_clicked)
 simplify1_button.clicked.connect(simplify1_clicked)
 simplify2_button.clicked.connect(simplify2_clicked)
 solve_button.clicked.connect(build_tree_clicked)
 
 # Initially disable all buttons except the first one
-simplify1_button.setEnabled(False)
+
 simplify2_button.setEnabled(False)
 solve_button.setEnabled(False)
 
