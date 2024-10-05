@@ -194,7 +194,7 @@ def input_clicked():
 
 def simplify1_clicked():
     global current_state
-    if current_state == "simplify1" :
+    if current_state == "simplify1" or "standard_input" :
         # Perform the action for simplify 1
         C = []
         for i in range(5):
@@ -203,7 +203,11 @@ def simplify1_clicked():
                 item = C_table.item(i, j)
                 if item is not None and item.text() != "":
                     try:
-                        row.append(float(item.text()))
+                        value = float(item.text())
+                        if value <= 0:
+                            QMessageBox.critical(None, "Ошибка", "Данные в таблице должны быть положительными числами")
+                            return
+                        row.append(value)
                     except ValueError:
                         QMessageBox.critical(None, "Ошибка", "Данные в таблице должны быть числами")
                         return
@@ -218,7 +222,11 @@ def simplify1_clicked():
                 item = T_table.item(i, j)
                 if item is not None and item.text() != "":
                     try:
-                        row.append(float(item.text()))
+                        value = float(item.text())
+                        if value <= 0:
+                            QMessageBox.critical(None, "Ошибка", "Данные в таблице должны быть положительными числами")
+                            return
+                        row.append(value)
                     except ValueError:
                         QMessageBox.critical(None, "Ошибка", "Данные в таблице должны быть числами")
                         return
@@ -247,7 +255,7 @@ def simplify1_clicked():
 
 def simplify2_clicked():
     global current_state
-    if current_state == "simplify2":
+    if current_state == "simplify2" or "simplify1":
         # Perform the action for simplify 2
         C = []
         for i in range(5):
@@ -293,7 +301,7 @@ def simplify2_clicked():
 
 def build_tree_clicked():
     global current_state
-    if current_state == "solve":
+    if current_state == "solve" or "simplify2":
         # Perform the action for build tree
         C = []
         for i in range(5):
