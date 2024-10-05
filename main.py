@@ -23,9 +23,6 @@ simplify2_button = window.findChild(QPushButton, 'simplify2')
 solve_button = window.findChild(QPushButton, 'build_tree')
 spinBox = window.findChild(QSpinBox, 'spinBox')
 
-
-
-
 image_label = QLabel()
 
 layout = window.findChild(QVBoxLayout, 'verticalLayout')
@@ -117,7 +114,7 @@ def construct_tree_solution(C1, T1):
 
     for i in range(len(C1)):
         for j in range(len(C1[0])):
-            if C1[i][j] != '-':
+            if C1[i][ j] != '-':
                 C1[i][j] = float(C1[i][j])
             if T1[i][j] != '-':
                 T1[i][j] = float(T1[i][j])
@@ -173,124 +170,159 @@ def standart_input():
 
     return C_default, T_default, TZ_default
 
+# Create a state machine
+state_machine = {"standard_input": "simplify1", "simplify1": "simplify2", "simplify2": "solve", "solve": None}
+current_state = "standard_input"
+
+# Define the slot functions
+def std_input_clicked():
+    global current_state
+    if current_state == "standard_input":
+        # Perform the action for standard input
+        C, T, TZ = standart_input()
+
+        for i in range(5):
+            for j in range(4):
+                C_table.setItem(i, j, QTableWidgetItem(str(C[i][j])))
+                T_table.setItem(i, j, QTableWidgetItem(str(T[i][j])))
+
+        spinBox.setValue(TZ)
+        current_state = state_machine[current_state]
+        simplify1_button.setEnabled(True)
+        standard_input_button.setEnabled(False)
+
 def simplify1_clicked():
-    C = []
-    for i in range(5):
-        row = []
-        for j in range(4):
-            item = C_table.item(i, j)
-            if item is not None and item.text() != "":
-                row.append(float(item.text()))
-            else:
-                row.append("")
-        C.append(row)
+    global current_state
+    if current_state == "simplify1":
+        # Perform the action for simplify 1
+        C = []
+        for i in range(5):
+            row = []
+            for j in range(4):
+                item = C_table.item(i, j)
+                if item is not None and item.text() != "":
+                    row.append(float(item.text()))
+                else:
+                    row.append("")
+            C.append(row)
 
-    T = []
-    for i in range(5):
-        row = []
-        for j in range(4):
-            item = T_table.item(i, j)
-            if item is not None and item.text() != "":
-                row.append(float(item.text()))
-            else:
-                row.append("")
-        T.append(row)
+        T = []
+        for i in range(5):
+            row = []
+            for j in range(4):
+                item = T_table.item(i, j)
+                if item is not None and item.text() != "":
+                    row.append(float(item.text()))
+                else:
+                    row.append("")
+            T.append(row)
 
 
-    C0, T0 = simplify_matrix_1(C, T)
+        C0, T0 = simplify_matrix_1(C, T)
 
-    for i in range(5):
-        for j in range(4):
-            if C0[i][j] == "-":
-                C_table.setItem(i, j, QTableWidgetItem("-"))
-            else:
-                C_table.setItem(i, j, QTableWidgetItem(str(C0[i][j])))
+        for i in range(5):
+            for j in range(4):
+                if C0[i][j] == "-":
+                    C_table.setItem(i, j, QTableWidgetItem("-"))
+                else:
+                    C_table.setItem(i, j, QTableWidgetItem(str(C0[i][j])))
 
-            if T0[i][j] == "-":
-                T_table.setItem(i, j, QTableWidgetItem("-"))
-            else:
-                T_table.setItem(i, j, QTableWidgetItem(str(T0[i][j])))
+                if T0[i][j] == "-":
+                    T_table.setItem(i, j, QTableWidgetItem("-"))
+                else:
+                    T_table.setItem(i, j, QTableWidgetItem(str(T0[i][j])))
+
+        current_state = state_machine[current_state]
+        simplify2_button.setEnabled(True)
+        simplify1_button.setEnabled(False)
 
 def simplify2_clicked():
-    C = []
-    for i in range(5):
-        row = []
-        for j in range(4):
-            item = C_table.item(i, j)
-            if item is not None and item.text() != "":
-                row.append(item.text())
-            else:
-                row.append(0)
-        C.append(row)
+    global current_state
+    if current_state == "simplify2":
+        # Perform the action for simplify 2
+        C = []
+        for i in range(5):
+            row = []
+            for j in range(4):
+                item = C_table.item(i, j)
+                if item is not None and item.text() != "":
+                    row.append(item.text())
+                else:
+                    row.append(0)
+            C.append(row)
 
-    T = []
-    for i in range(5):
-        row = []
-        for j in range(4):
-            item = T_table.item(i, j)
-            if item is not None and item.text() != "":
-                row.append(item.text())
-            else:
-                row.append(0)
-        T.append(row)
+        T = []
+        for i in range(5):
+            row = []
+            for j in range(4):
+                item = T_table.item(i, j)
+                if item is not None and item.text() != "":
+                    row.append(item.text())
+                else:
+                    row.append(0)
+            T.append(row)
 
-    TZ = spinBox.value()
+        TZ = spinBox.value()
 
-    C1, T1 = simplify_matrix_2(C, T, TZ)
+        C1, T1 = simplify_matrix_2(C, T, TZ)
 
-    for i in range(5):
-        for j in range(4):
-            if C1[i][j] == "-":
-                C_table.setItem(i, j, QTableWidgetItem("-"))
-            else:
-                C_table.setItem(i, j, QTableWidgetItem(str(C1[i][j])))
+        for i in range(5):
+            for j in range(4):
+                if C1[i][j] == "-":
+                    C_table.setItem(i, j, QTableWidgetItem("-"))
+                else:
+                    C_table.setItem(i, j, QTableWidgetItem(str(C1[i][j])))
 
-            if T1[i][j] == "-":
-                T_table.setItem(i, j, QTableWidgetItem("-"))
-            else:
-                T_table.setItem(i, j, QTableWidgetItem(str(T1[i][j])))
+                if T1[i][j] == "-":
+                    T_table.setItem(i, j, QTableWidgetItem("-"))
+                else:
+                    T_table.setItem(i, j, QTableWidgetItem(str(T1[i][j])))
+
+        current_state = state_machine[current_state]
+        solve_button.setEnabled(True)
+        simplify2_button.setEnabled(False)
 
 def build_tree_clicked():
-    C = []
-    for i in range(5):
-        row = []
-        for j in range(4):
-            item = C_table.item(i, j)
-            if item is not None and item.text() != "":
-                row.append(item.text())
-            else:
-                row.append(0)
-        C.append(row)
+    global current_state
+    if current_state == "solve":
+        # Perform the action for build tree
+        C = []
+        for i in range(5):
+            row = []
+            for j in range(4):
+                item = C_table.item(i, j)
+                if item is not None and item.text() != "":
+                    row.append(item.text())
+                else:
+                    row.append(0)
+            C.append(row)
 
-    T = []
-    for i in range(5):
-        row = []
-        for j in range(4):
-            item = T_table.item(i, j)
-            if item is not None and item.text() != "":
-                row.append(item.text())
-            else:
-                row.append(0)
-        T.append(row)
+        T = []
+        for i in range(5):
+            row = []
+            for j in range(4):
+                item = T_table.item(i, j)
+                if item is not None and item.text() != "":
+                    row.append(item.text())
+                else:
+                    row.append(0)
+            T.append(row)
 
-    data, solution_dict = construct_tree_solution(C, T)
-    print_solution(data,solution_dict)
+        data, solution_dict = construct_tree_solution(C, T)
+        print_solution(data,solution_dict)
+        current_state = state_machine[current_state]
+        solve_button.setEnabled(False)
 
-def std_input_clicked():
-    C, T, TZ = standart_input()
-
-    for i in range(5):
-        for j in range(4):
-            C_table.setItem(i, j, QTableWidgetItem(str(C[i][j])))
-            T_table.setItem(i, j, QTableWidgetItem(str(T[i][j])))
-
-    spinBox.setValue(TZ)
-
-
+# Connect the buttons to the slot functions
 standard_input_button.clicked.connect(std_input_clicked)
 simplify1_button.clicked.connect(simplify1_clicked)
 simplify2_button.clicked.connect(simplify2_clicked)
 solve_button.clicked.connect(build_tree_clicked)
+
+# Initially disable all buttons except the first one
+simplify1_button.setEnabled(False)
+simplify2_button.setEnabled(False)
+solve_button.setEnabled(False)
 
 window.show()
 app.exec()
