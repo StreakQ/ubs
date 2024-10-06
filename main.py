@@ -150,6 +150,8 @@ def print_solution(data,solution_dict):
     image_label.setPixmap(pixmap)
     layout.addWidget(image_label)
 
+
+
 def standart_input():
     """Заполнение матриц С и Т значениями по умолчанию"""
     C_default = [[2.5, 7, 2, 2],
