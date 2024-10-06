@@ -4,17 +4,15 @@ from PyQt6.QtWidgets import (QApplication, QPushButton, QTableWidget, QTableWidg
 from PyQt6.QtGui import QPixmap
 from create_svg import create_svg, create_node_solution, create_combine_solution
 
+
 Form, Window = uic.loadUiType("mainForm.ui")
 
-# Create the application
 app = QApplication([])
 
-# Create the window
 window = Window()
 form = Form()
 form.setupUi(window)
 
-# Get the widgets
 C_table = window.findChild(QTableWidget, 'Matrix_C')
 T_table = window.findChild(QTableWidget, 'Matrix_T')
 standard_input_button = window.findChild(QPushButton, 'std_input')
@@ -39,8 +37,6 @@ def check_data_matrix(data):
 
 def check_TZ(num):
     """Проверка правильности ввода TZ"""
-    # if not isinstance(num, float):
-    #     raise ValueError("Значение TZ не соответствует численному ")
     if not num > 0:
         raise ValueError("Значение TZ меньше или равно 0")
 
@@ -156,17 +152,17 @@ def print_solution(data,solution_dict):
 
 def standart_input():
     """Заполнение матриц С и Т значениями по умолчанию"""
-    C_default = [[3, 7, 2, 2],
-                 [4, 8, 1, 3],
-                 [5, 9, 6, 2],
-                 [6, 10, 7, 1],
-                 [7, 5, 3, 1]]
+    C_default = [[2.5, 7, 2, 2],
+                 [3, 8, 1, 3],
+                 [3.5, 9, 6, 2],
+                 [4, 10, 7, 1],
+                 [4.5, 5, 3, 1]]
 
-    T_default = [[1.5, 3, 2, 9],
-                 [2, 6, 5, 10],
-                 [3, 7, 6, 11],
+    T_default = [[2.5, 3, 2, 9],
+                 [3, 6, 5, 10],
+                 [3.5, 7, 6, 11],
                  [4, 8, 7, 12],
-                 [4, 9, 8, 5]]
+                 [4.5, 9, 8, 5]]
 
     TZ_default = 20
 
@@ -195,7 +191,6 @@ def input_clicked():
 def simplify1_clicked():
     global current_state
     if current_state == "simplify1" or current_state == "standard_input":
-        # Perform the action for simplify 1
         C = []
         for i in range(5):
             row = []
@@ -264,7 +259,6 @@ def simplify1_clicked():
 def simplify2_clicked():
     global current_state
     if current_state == "simplify2" or "simplify1":
-        # Perform the action for simplify 2
         C = []
         for i in range(5):
             row = []
@@ -312,7 +306,6 @@ def simplify2_clicked():
 def build_tree_clicked():
     global current_state
     if current_state == "solve" or "simplify2":
-        # Perform the action for build tree
         C = []
         for i in range(5):
             row = []
@@ -340,13 +333,12 @@ def build_tree_clicked():
         current_state = state_machine[current_state]
         solve_button.setEnabled(False)
 
-# Connect the buttons to the slot functions
+
 standard_input_button.clicked.connect(input_clicked)
 simplify1_button.clicked.connect(simplify1_clicked)
 simplify2_button.clicked.connect(simplify2_clicked)
 solve_button.clicked.connect(build_tree_clicked)
 
-# Initially disable all buttons except the first one
 
 simplify2_button.setEnabled(False)
 solve_button.setEnabled(False)

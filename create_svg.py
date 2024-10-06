@@ -1,5 +1,6 @@
 import svgwrite
 
+
 def create_svg(data):
     dwg = svgwrite.Drawing('tree.svg', profile='tiny', size=(300, 450),
                             )
@@ -12,7 +13,7 @@ def create_svg(data):
             rect_width = 80
             rect_height = 40
 
-            # Divide each rectangle in half
+
             rect1 = group.add(dwg.rect(
                 insert=(pair_index * 100 + 20, 0),
                 size=(rect_width / 2, rect_height),
@@ -68,3 +69,4 @@ def create_combine_solution():
     image1 = dwg.add(dwg.image('tree.svg', insert=(0, 0), size=(300, 450)))
     image2 = dwg.add(dwg.image('node_solution.svg', insert=(350, 0), size=(300, 500)))
     dwg.save()
+
